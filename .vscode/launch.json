@@ -26,7 +26,8 @@
                 }
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "DATABASE_STR": "host=localhost;database=householdevents;password=household;username=household"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceRoot}/Views"
