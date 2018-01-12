@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Household.Events;
+using GraphQL.Utilities;
+using GraphQL.Types;
 
 namespace Household
 {
@@ -40,10 +42,16 @@ namespace Household
                     _.Events.DatabaseSchemaName = "events";
                     _.Connection(connection);
 
-                    _.Events.InlineProjections.AggregateStreamsWith<Household>();
+                    _.Events.InlineProjections.AggregateStreamsWith<Household.Events.Household>();
                 });
                 return store;
             });
+
+            services.AddMvc();
+
+            services.AddSingleton<GraphQL.Query>();
+            services.AddSingleton<GraphQL.Mutation>();
+            services.AddSingleton<ISchema>(sp => GraphQL.GraphQLController.BuildSchema(sp));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -62,22 +70,11 @@ namespace Household
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseMvcWithDefaultRoute();
 
-            var store = (IDocumentStore)app.ApplicationServices.GetService(typeof(IDocumentStore));
-
-            using (var session = store.OpenSession())
-            {
-                var household = new Guid("9ed0b4f7-c406-4915-be71-28044785d5a4");
-                session.Events.Append(household, new PersonJoinedHousehold
-                {
-                    Person = new Person
-                    {
-                      Name = "Joe"
-                    }
-                });
-
-                session.SaveChanges();
-            }
+            var schema = app.ApplicationServices.GetService<ISchema>();
+            var output = new SchemaPrinter(schema).Print();
+            Console.WriteLine(output);
         }
     }
 }

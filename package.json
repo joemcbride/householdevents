@@ -1,8 +1,8 @@
 {
-  "name": "elanthiprofiles-netcore",
+  "name": "householdevents",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:joemcbride/elanthiprofiles-netcore.git",
+  "repository": "git@github.com:joemcbride/householdevents.git",
   "author": "Joe McBride <joe@uicraftsman.com>",
   "license": "MIT",
   "private": true,
